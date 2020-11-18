@@ -1,23 +1,14 @@
-FROM ubuntu:latest
+FROM registry.access.redhat.com/ubi8/nginx-116
 
-USER root
+# Add application sources to a directory that the assemble script expects them
+# and set permissions so that the container runs without root access
+USER 0
+ADD ./build /tmp/src/
+RUN chown -R 1001:0 /tmp/src
+USER 1001
 
-RUN apt-get update
-RUN apt-get install -y nginx 
+# Let the assemble script to install the dependencies
+RUN /usr/libexec/s2i/assemble
 
-# Remove the default Nginx configuration file
-RUN rm -v /etc/nginx/nginx.conf
-
-# Copy a configuration file from the current directory
-ADD nginx.conf /etc/nginx/
-
-ADD ./build /usr/share/nginx/html/
-ADD ./build /var/www/html/
-
-# Append "daemon off;" to the beginning of the configuration
-RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-
-
-# Set the default command to execute
-# when creating a new container
-CMD service nginx start
+# Run script uses standard ways to run the application
+CMD /usr/libexec/s2i/run
