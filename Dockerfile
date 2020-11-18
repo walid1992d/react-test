@@ -7,8 +7,9 @@ ADD ./build /tmp/src/
 ADD nginx.conf "${NGINX_CONF_PATH}"
 
 RUN mkdir /tmp/src/logs
-RUN chown -R 1001:0 /tmp/src/logs
-RUN chown -R 1001:0 /tmp/src
+RUN chown -R 1001 /tmp/src
+RUN chown -R 1001 /tmp/src/logs
+
 USER 1001
 
 # Let the assemble script to install the dependencies
