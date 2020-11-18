@@ -5,9 +5,9 @@ FROM registry.access.redhat.com/ubi8/nginx-118
 USER 0
 ADD ./build /tmp/src/
 ADD nginx.conf "${NGINX_CONF_PATH}"
-RUN mkdir logs
-RUN chown -R 1001:0 logs
-RUN touch logs/ssl_error_log
+
+RUN mkdir /tmp/src/logs
+RUN chown -R 1001:0 /tmp/src/logs
 RUN chown -R 1001:0 /tmp/src
 USER 1001
 
