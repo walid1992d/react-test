@@ -1,0 +1,8 @@
+FROM registry.access.redhat.com/rhel8/nginx-116
+
+# Add application sources
+ADD nginx.conf "${NGINX_CONF_PATH}"
+ADD ./build .
+
+# Run script uses standard ways to run the application
+CMD nginx -g "daemon off;"
