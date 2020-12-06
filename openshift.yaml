@@ -12,12 +12,23 @@ spec:
     metadata:
       labels:
         app: react-app
+        maistra.io/expose-route: "true"
+
+       
+
     spec:
       containers:
         - name: react-app
           image: quay.io/walidabouali/react-app
           ports:
             - containerPort: 8080
+          volumeMounts:
+          - name: nginx-default-config
+            mountPath: /etc/nginx/conf.d
+      volumes:
+        - name: nginx-default-config
+          configMap:
+            name: nginx-default-config
 ---
     apiVersion: v1
     kind: Service
@@ -140,5 +151,27 @@ spec:
       namespace: awb-tests
     data:
       envName: dev
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-default-config
+  namespace: awb-tests
+data:
+  default.conf: |
+ 
+        server {
+             root /tmp/src/;
+            index index.html;
+            server_name localhost;
+            listen 8080;
+            error_log /tmp/src/logs/ssl_error_log warn;
+            access_log /tmp/src/logs/ssl_request_log;
+            error_page 404 /index.html;
+
+
+        }
+    
+   
 
             
